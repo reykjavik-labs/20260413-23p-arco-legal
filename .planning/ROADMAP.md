@@ -25,7 +25,7 @@ El proyecto parte con una fase estratégica (narrativa + PRD) antes de tocar có
   2. Existe un PRD.md con personas de usuario definidas, flujos principales del producto, requisitos funcionales y no funcionales
   3. El PRD incluye una sección de arquitectura de integraciones (manual-first → automatizada)
   4. Cualquier co-founder o socio estratégico puede leer los dos documentos y entender exactamente qué se va a construir y para quién
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
 - [ ] 00-01: Narrativa estratégica (via /draft-strategic-presentation)
@@ -43,7 +43,7 @@ Plans:
   3. El sistema envía alerta automática al operador cuando una solicitud lleva 20, 25 y 29 días sin respuesta
   4. El operador puede solicitar prórroga de 30 días adicionales y el titular recibe notificación automática
   5. Un administrador puede crear la cuenta de empresa, invitar operadores, y los operadores pueden autenticarse
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
 - [ ] 01-01: Setup del proyecto web (stack, base de datos, autenticación)
@@ -62,7 +62,7 @@ Plans:
   3. El titular puede consultar el estado de su solicitud ingresando su número de seguimiento
   4. Existe un log de auditoría por solicitud que registra cada acción con timestamp y usuario, que no puede ser modificado
   5. El operador puede exportar el comprobante de cumplimiento en PDF con el timeline completo de la solicitud
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
 - [ ] 02-01: Gestión de estados y asignación de solicitudes
@@ -80,7 +80,7 @@ Plans:
   2. Frente a una solicitud activa, el operador puede ejecutar la búsqueda en buk.cl con el RUT del titular y obtener resultados dentro de la plataforma
   3. El operador puede seleccionar qué datos recolectados incluir en la respuesta y el sistema registra la fuente y fecha de cada dato
   4. El flujo completo (solicitud → búsqueda en buk → respuesta) puede completarse sin salir de ARCO Legal
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
 - [ ] 03-01: OAuth / conexión de cuenta buk.cl por empresa
@@ -98,7 +98,7 @@ Plans:
   2. El reporte de compliance es exportable en CSV y PDF
   3. El sistema soporta al menos 5 operadores simultáneos por empresa sin degradación de rendimiento
   4. El tiempo de carga del dashboard es inferior a 2 segundos con 100 solicitudes activas
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
 - [ ] 04-01: Dashboard de métricas de compliance + exportación de reportes
