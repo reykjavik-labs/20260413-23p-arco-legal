@@ -125,6 +125,13 @@ None — no external service configuration required.
 - ARCO+ rights vocabulary and Ley 21.719 legal numbers established — next plan (PRD) should reference these directly
 - 3-phase roadmap structure (Plataforma Core / Flujos de Cumplimiento / Integraciones Automatizadas) is canonical — PRD should align functional requirements to these phases
 
+## Self-Check: PASSED
+
+- FOUND: docs/STRATEGIC-NARRATIVE.md
+- FOUND: .planning/phases/00-fundaci-n-estrat-gica/00-01-SUMMARY.md
+- FOUND commit: 8cc1998 (feat: create STRATEGIC-NARRATIVE.md)
+- FOUND commit: 0dcc8df (docs: complete strategic narrative plan — SUMMARY.md)
+
 ---
 *Phase: 00-fundaci-n-estrat-gica*
 *Completed: 2026-04-14*
