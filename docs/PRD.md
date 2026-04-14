@@ -213,3 +213,143 @@ ARCO Legal existe para resolver este problema: una empresa puede recibir, gestio
 - **AUTH-02:** Administrador puede invitar operadores con email corporativo.
 - **AUTH-03:** Autenticación con email y contraseña.
 - **AUTH-04:** Roles: Administrador (configuración + acceso completo) y Operador (solo gestión de solicitudes).
+
+---
+
+## Non-Functional Requirements
+
+| ID | Requisito | Justificación |
+|----|-----------|---------------|
+| NFR-01 | Log de auditoría inmutable — no puede ser modificado ni eliminado por ningún usuario del sistema | Ley 21.719 principio de responsabilidad (accountability): la empresa debe demostrar cumplimiento ante la Agencia. Referencia: AUDIT-04. |
+| NFR-02 | Interfaz completamente en español | Mercado objetivo: empresas chilenas. La ley, la regulación y los titulares operan en español. |
+| NFR-03 | Tiempo de carga del dashboard inferior a 2 segundos con 100 solicitudes activas | El operador necesita visibilidad inmediata para actuar dentro de plazos legales. Latencia alta puede resultar en solicitudes no vistas. |
+| NFR-04 | Disponibilidad 99.5% (uptime) durante horario laboral chileno (lunes a viernes, 8:00–20:00 CLT) | Solicitudes con plazo legal de 30 días corridos no pueden depender de un sistema caído. |
+| NFR-05 | Datos de la plataforma respaldados diariamente con retención mínima de 90 días | Continuidad operativa y recuperación ante desastres. Las solicitudes tienen valor probatorio ante fiscalización. |
+| NFR-06 | La plataforma debe cumplir con la Ley 21.719 en su propio tratamiento de datos: minimización de datos, base legal para cada tratamiento, derecho de acceso a datos propios | Meta-compliance: la herramienta de compliance debe ser compliant. Credibilidad del producto exige coherencia. |
+| NFR-07 | Contraseñas almacenadas con hash seguro (bcrypt o argon2). Tokens de sesión con expiración configurada. | Seguridad básica de autenticación — referencia: AUTH-03. |
+| NFR-08 | Soporte para al menos 5 operadores simultáneos por empresa sin degradación de rendimiento | Escalabilidad mínima para PyMEs con equipos medianos. |
+| NFR-09 | Datos personales del titular almacenados solo lo operativamente necesario para gestionar la solicitud. No se almacenan datos recolectados de plataformas terceras más allá del registro de fuente y fecha. | Principio de minimización de datos — Ley 21.719. La plataforma gestiona el proceso, no almacena los datos en sí mismos. |
+
+---
+
+## Integration Architecture
+
+### Philosophy: Manual-First, luego Automatizada
+
+La plataforma está diseñada para que una empresa pueda cumplir con sus obligaciones ARCO+ con o sin integraciones de API. Las integraciones aceleran un flujo de trabajo manual existente; no lo definen. El cumplimiento legal es posible desde el primer día, sin configurar ninguna integración.
+
+**Base legal para la recolección de datos desde plataformas de terceros:** El derecho de acceso establecido por la Ley 21.719 obliga al responsable de datos (la empresa) a entregar al titular toda la información personal que posea, incluyendo los datos tratados por encargados de tratamiento — terceras plataformas que procesan datos por cuenta del responsable. Esto incluye plataformas de RRHH (buk.cl), CRMs, sistemas de email marketing, entre otros. La arquitectura de integraciones aborda esta necesidad operativa de forma progresiva: primero manual guiada, luego automatizada.
+
+### v1: Recolección Manual Guiada (Phase 2)
+
+Referencia: INTG-01
+
+Cuando el operador recibe una solicitud de acceso, debe localizar todos los datos personales del titular dispersos en los sistemas de la empresa. En v1, el flujo es:
+
+1. Operador abre el flujo "Recolectar Datos" para la solicitud activa
+2. La plataforma presenta un checklist de plataformas configuradas por el administrador (buk.cl, CRM, email, archivos, etc.)
+3. Operador busca manualmente en cada plataforma por nombre/RUT del titular
+4. Registra los resultados: qué datos encontró, en qué plataforma y la fecha
+5. Marca cada plataforma como "revisada" o "sin datos encontrados"
+
+**Por qué manual primero:** Valida el flujo de trabajo antes de automatizarlo. Identifica qué integraciones ahorran más tiempo por solicitud. Reduce la complejidad de Phase 1. Es adoptable sin configuración técnica.
+
+### v2: Recolección Automatizada — buk.cl (Phase 3)
+
+Referencias: INTG-02, INTG-03, INTG-04
+
+Después de validar el flujo manual, la plataforma agrega recolección automatizada comenzando con buk.cl:
+
+1. Administrador conecta la cuenta de buk.cl de la empresa via OAuth
+2. Operador activa búsqueda automatizada por RUT del titular para una solicitud activa
+3. Plataforma recupera registros relevantes (CV, contratos, historial de remuneraciones)
+4. Operador revisa y selecciona qué datos incluir en la respuesta al titular
+5. Sistema registra la fuente, la fecha de recolección y el operador que aprobó la selección
+
+**Por qué buk.cl primero:** Es la plataforma de RRHH más común en PyMEs chilenas. Los datos de empleados (actuales y ex-empleados) representan el caso ARCO+ más frecuente.
+
+### Integraciones Futuras (v2+)
+
+- **INTG-05:** Integración con plataformas CRM (Salesforce, HubSpot)
+- **INTG-06:** Integración con plataformas de email marketing (Mailchimp, etc.)
+- **INTG-07:** API pública para que empresas conecten sus propios sistemas internos
+
+### Criterios de Decisión para Nuevas Integraciones
+
+Una nueva integración se justifica cuando:
+
+- La plataforma es fuente común de datos personales para el cliente objetivo
+- La búsqueda manual toma más de 5 minutos por solicitud
+- La plataforma tiene API documentada u OAuth estándar disponible
+
+---
+
+## Out of Scope
+
+Las siguientes características están explícitamente excluidas de v1 para mantener el foco en el problema central.
+
+| Feature | Razón |
+|---------|-------|
+| App móvil nativa | Web-first; mobile en v2+ cuando haya base de usuarios validada |
+| Almacenamiento de datos personales del titular | La plataforma gestiona el proceso, no almacena los datos personales en sí mismos (principio de minimización de datos, Ley 21.719) |
+| Asesoría legal automatizada | Riesgo regulatorio; la plataforma facilita el proceso operativo, no reemplaza al abogado |
+| Integración con Registro Civil (verificación RUT) | Complejidad de acceso a API gubernamental; validación básica de nombre/RUT en v1 |
+| Multilenguaje | Mercado chileno en español; i18n es complejidad innecesaria para v1 |
+| Multi-empresa (multi-tenant real) | Arquitectura preparada pero funcionalidad en v2+ (MULT-01 en REQUIREMENTS.md) |
+| Modelo de negocio / pricing | Se define por separado, fuera de este PRD (decisiones D-05, D-06 de CONTEXT.md) |
+| Stack tecnológico | Se define en Phase 1; este PRD describe comportamiento y restricciones, no implementación |
+
+---
+
+## Open Questions
+
+Las siguientes preguntas están sin resolver antes de iniciar Phase 1 y pueden afectar las decisiones de desarrollo.
+
+1. **Validación de identidad del titular (INTAK-04)**
+   - *Lo que sabemos:* INTAK-04 especifica "nombre coincide con RUT" como validación mínima.
+   - *Lo que no está claro:* Sin acceso a la API del Registro Civil, la validación será básica (coincidencia de cadena, no verificación oficial). Podrían llegar solicitudes con datos incorrectos o fraudulentos.
+   - *Impacto en el desarrollo:* La validación manual por el operador es la mitigación en v1. Definir qué nivel de discrepancia activa revisión manual.
+
+2. **Período de gracia para PyMEs (dic 2026 – dic 2027)**
+   - *Lo que sabemos:* Fuentes secundarias indican que el primer año de vigencia tendría solo advertencias sin multas para empresas pequeñas.
+   - *Lo que no está claro:* Pendiente confirmación oficial en la regulación. No hay resolución publicada aún.
+   - *Impacto en el desarrollo:* Si se confirma, cambia la urgencia percibida del mercado en el primer año, pero no la obligación legal real. No afecta decisiones técnicas.
+
+3. **Perfil exacto del primer cliente (D-03)**
+   - *Lo que sabemos:* El perfil puede ser PyME chilena (50–500 empleados), firma legal que gestiona compliance para clientes, u otro.
+   - *Lo que no está claro:* El perfil afecta la prioridad de features y qué persona es la principal en v1. Una firma legal requiere multi-tenant (v2); una PyME no.
+   - *Impacto en el desarrollo:* Puede cambiar la prioridad de MULT-01 en REQUIREMENTS.md y el orden de desarrollo de integraciones.
+
+4. **Hosting y jurisdicción de datos**
+   - *Lo que sabemos:* La Ley 21.719 establece requisitos sobre transferencia internacional de datos personales.
+   - *Lo que no está claro:* Qué cloud providers y qué regiones cumplen con "jurisdicción adecuada" según la regulación chilena. Pendiente publicación de la lista de países con protección adecuada por la Agencia.
+   - *Impacto en el desarrollo:* Afecta la decisión de cloud provider y región en Phase 1. Crítico para NFR-06 (meta-compliance).
+
+---
+
+## Assumptions
+
+Las siguientes hipótesis se asumen como válidas para comenzar Phase 1. Cada una tiene un riesgo explícito si resulta incorrecta.
+
+1. **buk.cl es la plataforma de RRHH más común en PyMEs chilenas.**
+   - *Riesgo si es incorrecto:* Si los clientes objetivo usan principalmente Talana u otras plataformas, la prioridad de integración en Phase 3 cambia. No afecta el flujo manual de v1 ni la arquitectura core.
+
+2. **El titular ejerce sus derechos ARCO+ de forma individual, no colectiva.**
+   - *Riesgo si es incorrecto:* Si hay ejercicio colectivo o campañas organizadas de solicitudes, el volumen por empresa podría ser significativamente mayor al proyectado. Las NFR de rendimiento (NFR-03, NFR-08) necesitarían revisión.
+
+3. **El operador de compliance es una persona con otro cargo principal (RRHH, administración, legal).**
+   - *Riesgo si es incorrecto:* Si los primeros clientes son empresas más grandes con DPO dedicado, las necesidades de workflow son distintas — más volumen, integración con sistemas legales, reportes avanzados. La Persona A cambiaría significativamente.
+
+4. **50–500 empleados es el rango de empresa objetivo para v1.**
+   - *Riesgo si es incorrecto:* Si el primer cliente es más pequeño (< 50 empleados), algunas NFR de rendimiento son irrelevantes. Si es más grande (> 500), los requisitos de roles, volumen y reporting cambian.
+
+5. **El plazo de 30 días corridos está confirmado en el texto de la Ley 21.719.**
+   - *Riesgo:* BAJO. Confirmado por múltiples fuentes incluyendo el texto oficial de la ley (BCN Chile). Es un dato fundamental y no cambia.
+
+---
+
+*PRD Version: 1.0*
+*Created: 2026-04-13*
+*Last updated: 2026-04-13*
+*Phase: 0 — Fundación Estratégica*
+*Next: Phase 1 begins development based on this PRD*
