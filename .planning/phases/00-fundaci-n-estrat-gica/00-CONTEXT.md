@@ -6,7 +6,7 @@
 <domain>
 ## Phase Boundary
 
-Producir la narrativa estratégica del producto ARCO Legal usando el skill `/draft-strategic-presentation`, que guía la creación paso a paso a través de 6 fases y luego ensambla el documento final.
+Producir la narrativa estratégica del producto ARCO Legal usando el skill `/draft-strategic-narrative`, que guía la creación paso a paso a través de 6 fases y luego ensambla el documento final.
 
 **Output único**: `docs/STRATEGIC-NARRATIVE.md` — reescrito desde cero con la estructura del skill.
 
@@ -25,14 +25,14 @@ Esta fase cubre **solo DOC-01 y DOC-04**. El PRD (DOC-02, DOC-03) está fuera de
 
 ## Estructura del documento
 
-- **D-04:** La narrativa sigue **exactamente la estructura de `/draft-strategic-presentation`**:
+- **D-04:** La narrativa sigue **exactamente la estructura de `/draft-strategic-narrative`**:
     - Phase 0: Foundation — Mensaje clave, audiencia, insights de decisión
     - Phase 1: El Contexto — Realidad actual con datos verificados
     - Phase 2: El Desafío — Problema real, urgencia, costo de la inacción
     - Phase 3: La Gran Idea — Solución con impacto medible
     - Phase 4: Estrategia — 3-5 elecciones estratégicas
     - Phase 5: Ejecución — Blueprint de ejecución y métricas
-- **D-05:** El plan ejecuta el skill `/draft-strategic-presentation` completo (no una escritura manual), siguiendo su flujo fase por fase hasta el ensamblado final.
+- **D-05:** El plan ejecuta el skill `/draft-strategic-narrative` completo (no una escritura manual), siguiendo su flujo fase por fase hasta el ensamblado final.
 
 ## Audiencia y tono
 
@@ -68,7 +68,7 @@ Esta fase cubre **solo DOC-01 y DOC-04**. El PRD (DOC-02, DOC-03) está fuera de
 
 ### Skill de ejecución
 
-- `/draft-strategic-presentation` (skill instalado en Claude Code) — Estructura de 6 fases, preguntas por fase, criterios de validación, proceso de ensamblado final. El plan debe invocar este skill, no replicar su lógica manualmente.
+- `/draft-strategic-narrative` (skill instalado en Claude Code) — Estructura de 6 fases, preguntas por fase, criterios de validación, proceso de ensamblado final. El plan debe invocar este skill, no replicar su lógica manualmente.
 
 ### No hay specs externas adicionales
 
@@ -97,7 +97,7 @@ Esta es la fase fundacional del proyecto. Todos los requisitos están en los arc
 <specifics>
 ## Specific Ideas
 
-- El skill `/draft-strategic-presentation` es la herramienta de ejecución, no una tarea de escritura libre. El plan debe invocar el skill y dejar que guíe el proceso.
+- El skill `/draft-strategic-narrative` es la herramienta de ejecución, no una tarea de escritura libre. El plan debe invocar el skill y dejar que guíe el proceso.
 - La narrativa para reunión presencial debe ser concisa y orientada a provocar conversación, no a cubrir todos los detalles.
 - El documento resultante debe ser proyectable — cada sección pensada para ser hablada, no leída en silencio.
 - La Ley 21.719 con números concretos (30 días, 5K/10K/20K UTM, diciembre 2026) debe estar presente desde el principio.

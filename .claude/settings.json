@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(gsd-execute-phase)",
+      "Skill(gsd-execute-phase:*)",
+      "Bash(git commit -m ':*)",
+      "Bash(node __TRACKED_VAR__/.claude/get-shit-done/bin/gsd-tools.cjs roadmap update-plan-progress 00 00-01 completed)",
+      "Bash(node __TRACKED_VAR__/.claude/get-shit-done/bin/gsd-tools.cjs state complete-phase --phase 00)",
+      "Bash(git commit:*)"
+    ],
+    "additionalDirectories": [
+      "/Volumes/Workspace/repos/reykjavik-labs/cowork/20260413-23p-arco-legal"
+    ]
+  }
+}

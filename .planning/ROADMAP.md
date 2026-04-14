@@ -29,7 +29,7 @@ El proyecto parte con una fase estratégica (narrativa) antes de tocar código. 
 
 Plans:
 
-- [ ] 00-01: Narrativa estratégica (via /draft-strategic-presentation)
+- [x] 00-01: Narrativa estratégica (via /draft-strategic-presentation)
 
 ---
 
